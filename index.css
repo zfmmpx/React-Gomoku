@@ -1,0 +1,190 @@
+html {
+  /* font-size: 62.5%; */
+}
+body {
+  font: 14px "Microsoft YaHei";
+  margin: 20px;
+}
+
+ol, ul {
+  padding-left: 30px;
+}
+
+.board-row {
+  display: inline-block;
+  display: flex;
+}
+.board-row:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+.game-board {
+  position: relative;
+  display: inline-block;
+}
+.winner-mask {
+  position:absolute;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.winner-mask .message {
+  color: white;
+  font-size: 1.8rem;
+}
+
+.square {
+  background: #fff;
+  border-top: 1px solid #999;
+  border-left: 1px solid #999;
+  border-right: 0px solid #999;
+  border-bottom: 0px solid #999;
+  padding: 0;
+  float: left;
+  text-align: center;
+}
+.square.right {
+  border-right: 1px solid #999;
+}
+.square.bottom {
+  border-bottom: 1px solid #999;
+}
+.square:hover {
+  background-color: #61abe754;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.kbd-navigation .square:focus {
+  background: #ddd;
+}
+
+.game-info ol li {
+  margin-bottom: 2px;
+  margin-right: 40px;
+}
+.game-info ol li button {
+  height: 22px;
+}
+
+
+.game-info ol {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 244px;
+}
+
+
+
+
+.square {
+  /* font-size: 15px; */
+  font-size: 0.7rem;
+  width: 1rem;
+  height: 1rem;
+  line-height: 1rem;
+  font-weight: normal;
+}
+.square.isLastStep {
+  border: 1px solid #000;
+}
+
+
+@media  (max-width: 400px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+
+@media (min-width: 400px) and (max-width: 440px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 440px) and (max-width: 540px) {
+  html {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 540px) and (max-width: 600px) {
+  html {
+    font-size: 24px;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 720px) {
+  html {
+    font-size: 28px;
+  }
+  .square {
+    font-weight: bold;
+  }
+  .square.isLastStep {
+    border: 2px solid #000;
+  }
+}
+
+@media (min-width: 720px) and (max-width: 940px) {
+  html {
+    font-size: 34px;
+  }
+  .square {
+    font-weight: bold;
+  }
+  .square.isLastStep {
+    border: 2px solid #000;
+  }
+  .game {
+    display: flex;
+    flex-direction: column;
+  }
+  .game-info {
+    min-width: 180px;
+    margin-top: 10px;
+  }
+}
+
+@media (min-width: 940px) {
+  html {
+    font-size: 34px;
+  }
+  .square {
+    font-weight: bold;
+  }
+  .square.isLastStep {
+    border: 2px solid #000;
+  }
+  .game-info ol {
+    height: 900px;
+  }
+  .game {
+    display: flex;
+    flex-direction: row;
+  }
+  .game-info {
+    min-width: 180px;
+    margin-left: 20px;
+    margin-top: 0px;
+  }
+}
+
+
+.game {
+  min-width: 320px;
+}
