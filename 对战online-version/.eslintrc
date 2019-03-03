@@ -1,0 +1,47 @@
+{
+  // 打开 ECMAScript 6 and 7 转换器，默认只打开 ECMAScript 3, 5
+  "parser": "babel-eslint",
+  // 校验场景，不同场景提供不同的预定义全局变量，例如浏览器中的 window
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  // 使用 Airbnb 校验规则
+  "extends": "airbnb",
+  "rules": {
+    // 打开 console
+    "no-console": 0,
+    // 打开 alert
+    "no-alert": 0,
+    "no-shadow": 0,
+    // 关闭换行符校验
+    "linebreak-style": 0,
+    "import/extensions": 0,
+    "import/no-unresolved": 0,
+    "import/no-extraneous-dependencies": 0,
+    // react 文件同时支持 jsx、js 后缀名
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    // 所有 PropTypes 类型可用
+    "react/forbid-prop-types": 0,
+    // 由于 PropTypes.shape 校验还不完善，关闭该校验
+    // "react/no-unused-prop-types": ["warn", { "customValidators": [], "skipShapeProps": true }],
+    "jsx-a11y/no-static-element-interactions": 0,
+    // 关闭 label 强制设置 for 属性
+    "jsx-a11y/label-has-for": 0,
+    // 箭头函数只有在需要时参数列才在左右添加小括号
+    "arrow-parens": ["error", "as-needed"],
+    // 允许使用全局 require，因为 webpack 热加载时需要使用
+    "global-require": 0,
+    "class-methods-use-this": 0,
+    "func-names": 0,
+    "jsx-a11y/anchor-has-content": 0,
+    "import/no-dynamic-require": 0,
+    // 为了方便开发，黄健修改
+    "no-unused-vars": 1,
+    "arrow-body-style": 0,
+    "camelcase": 0,
+    "max-len": 1,
+    "react/no-unused-prop-types": 1,
+  }
+}

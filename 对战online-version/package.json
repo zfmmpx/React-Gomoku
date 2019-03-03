@@ -1,0 +1,26 @@
+{
+  "name": "gomoku-online",
+  "version": "1.0.0",
+  "description": "websocket socket.io online Gomoku.",
+  "main": "wsServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zfmmpx/React-Gomoku/tree/master/online-version"
+  },
+  "keywords": [
+    "websocket",
+    "gomoku"
+  ],
+  "author": "Jimmy Huang",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/register": "^7.0.0",
+    "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
+    "socket.io": "^2.2.0"
+  }
+}
