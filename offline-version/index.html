@@ -1,11 +1,11 @@
 <head>
-	<title>单机版五子棋</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>单机版五子棋</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <link rel="stylesheet" href="./index.css" />
 <div
-	id="errors"
-	style="
+  id="errors"
+  style="
 		background: #c00;
 		color: #fff;
 		display: none;
@@ -15,36 +15,36 @@
 ></div>
 <div id="root"></div>
 <script>
-	window.addEventListener('mousedown', function(e) {
-		document.body.classList.add('mouse-navigation')
-		document.body.classList.remove('kbd-navigation')
-	})
-	window.addEventListener('keydown', function(e) {
-		if (e.keyCode === 9) {
-			document.body.classList.add('kbd-navigation')
-			document.body.classList.remove('mouse-navigation')
-		}
-	})
-	window.addEventListener('click', function(e) {
-		if (e.target.tagName === 'A' && e.target.getAttribute('href') === '#') {
-			e.preventDefault()
-		}
-	})
-	window.onerror = function(message, source, line, col, error) {
-		var text = error
-			? error.stack || error
-			: message + ' (at ' + source + ':' + line + ':' + col + ')'
-		errors.textContent += text + '\n'
-		errors.style.display = ''
-	}
-	console.error = (function(old) {
-		return function error() {
-			errors.textContent +=
-				Array.prototype.slice.call(arguments).join(' ') + '\n'
-			errors.style.display = ''
-			old.apply(this, arguments)
-		}
-	})(console.error)
+  window.addEventListener('mousedown', function(e) {
+    document.body.classList.add('mouse-navigation');
+    document.body.classList.remove('kbd-navigation');
+  });
+  window.addEventListener('keydown', function(e) {
+    if (e.keyCode === 9) {
+      document.body.classList.add('kbd-navigation');
+      document.body.classList.remove('mouse-navigation');
+    }
+  });
+  window.addEventListener('click', function(e) {
+    if (e.target.tagName === 'A' && e.target.getAttribute('href') === '#') {
+      e.preventDefault();
+    }
+  });
+  window.onerror = function(message, source, line, col, error) {
+    var text = error
+      ? error.stack || error
+      : message + ' (at ' + source + ':' + line + ':' + col + ')';
+    errors.textContent += text + '\n';
+    errors.style.display = '';
+  };
+  console.error = (function(old) {
+    return function error() {
+      errors.textContent +=
+        Array.prototype.slice.call(arguments).join(' ') + '\n';
+      errors.style.display = '';
+      old.apply(this, arguments);
+    };
+  })(console.error);
 </script>
 
 <script src="./react.production.min.js"></script>
