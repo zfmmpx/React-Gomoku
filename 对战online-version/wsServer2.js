@@ -1,5 +1,7 @@
-var app = require("http").createServer()
+var app = require('http').createServer()
 var io = require('socket.io')(app)
+var uuid = require('uuid')
+var _ = require('lodash')
 
 var PORT = 3099
 
@@ -10,12 +12,14 @@ var socketMap = []
 
 app.listen(PORT)
 
-
 io.on('connection', function(socket) {
-	clientCount = clientCount + 1
-	socket.nickname = 'player' + clientCount
-	socket.clientNum = clientCount
+	// clientCount = clientCount + 1
+	socket.id = uuid()
 	socketMap.push(socket)
+	const socketIndex = _.indexOf(socketMap, _.find(socketMap, { id: socket.id }))
+
+	socket.nickname = 'player' + (socketIndex + 1)
+	console.log('connect', socketMap.length, socketIndex)
 
 	// 聊天室
 	io.emit('enter', socket.nickname + ' comes in')
@@ -27,98 +31,91 @@ io.on('connection', function(socket) {
 	})
 
 	// 游戏开始，
-	if (socket.clientNum % 2 === 0) {
-		socket.emit('waiting', { str: '等待其他玩家...', myNickname: socket.nickname })
+	if (socketIndex % 2 === 0) {
+		socket.emit('waiting', {
+			str: '等待其他玩家...',
+			myNickname: socket.nickname
+		})
 	} else {
-		if (socketMap[socket.clientNum - 1]) {
+		if (socketMap[socketIndex - 1]) {
 			// 决定谁先手，初始化各自的nickname
-			socketMap[(socket.clientNum - 1)].emit(
-				'start',
-				{
-					myTurn: true,
-					myNickname: socketMap[(socket.clientNum - 1)].nickname,
-					hisNickname: socket.nickname,
-				}
-			)
-			socket.emit(
-				'start',
-				{
-					myTurn: false,
-					myNickname: socket.nickname,
-					hisNickname: socketMap[(socket.clientNum - 1)].nickname,
-				},
-			)
+			socketMap[socketIndex - 1].emit('start', {
+				myTurn: true,
+				myNickname: socketMap[socketIndex - 1].nickname,
+				hisNickname: socket.nickname
+			})
+			socket.emit('start', {
+				myTurn: false,
+				myNickname: socket.nickname,
+				hisNickname: socketMap[socketIndex - 1].nickname
+			})
 		} else {
-      socket.emit('leave')
+			socket.emit('leave')
 		}
 	}
 	// 设置昵称
 	socket.on('setNickname', str => {
 		io.emit('message', socket.nickname + '把他的昵称改为：' + str)
 		socket.nickname = str
-		if (socket.clientNum % 2 === 0) {
+		if (socketIndex % 2 === 0) {
 			socket.emit('changeMyNickname', str)
-			socketMap[(socket.clientNum + 1)].emit('changeHisNickname', str)
-		} else if (socketMap[socket.clientNum - 1]) {
+			socketMap[socketIndex + 1].emit('changeHisNickname', str)
+		} else if (socketMap[socketIndex - 1]) {
 			socket.emit('changeMyNickname', str)
-			socketMap[(socket.clientNum - 1)].emit('changeHisNickname', str)
+			socketMap[socketIndex - 1].emit('changeHisNickname', str)
 		}
 	})
 
 	// 轮流下子
 	socket.on('switchPlayer', bool => {
-		if (socket.clientNum % 2 === 0) {
+		if (socketIndex % 2 === 0) {
 			socket.emit('switchPlayer', !bool)
-			socketMap[(socket.clientNum + 1)].emit('switchPlayer', bool)
-		} else if (socketMap[socket.clientNum - 1]) {
+			if (socketMap[socketIndex + 1])
+				socketMap[socketIndex + 1].emit('switchPlayer', bool)
+		} else if (socketMap[socketIndex - 1]) {
 			socket.emit('switchPlayer', !bool)
-			socketMap[(socket.clientNum - 1)].emit('switchPlayer', bool)
+			if (socketMap[socketIndex - 1])
+				socketMap[socketIndex - 1].emit('switchPlayer', bool)
 		}
 	})
 	// 将自己的下子同步给对手
 	socket.on('click', data => {
-		if (socket.clientNum % 2 === 0) {
-			if (socketMap[socket.clientNum + 1]) {
-				socketMap[socket.clientNum + 1].emit('click', data)
+		if (socketIndex % 2 === 0) {
+			if (socketMap[socketIndex + 1]) {
+				socketMap[socketIndex + 1].emit('click', data)
 			}
 		} else {
-			if (socketMap[socket.clientNum - 1]) {
-				socketMap[socket.clientNum - 1].emit('click', data)
+			if (socketMap[socketIndex - 1]) {
+				socketMap[socketIndex - 1].emit('click', data)
 			}
 		}
 	})
 	// 跳到某一步
 	socket.on('jump', data => {
-		if (socket.clientNum % 2 === 0) {
-			if (socketMap[socket.clientNum + 1]) {
-				socketMap[socket.clientNum + 1].emit('jump', data)
+		if (socketIndex % 2 === 0) {
+			if (socketMap[socketIndex + 1]) {
+				socketMap[socketIndex + 1].emit('jump', data)
 			}
 		} else {
-			if (socketMap[socket.clientNum - 1]) {
-				socketMap[socket.clientNum - 1].emit('jump', data)
+			if (socketMap[socketIndex - 1]) {
+				socketMap[socketIndex - 1].emit('jump', data)
 			}
 		}
 	})
 	// 掉线
-	socket.on('disconnect', function () {
-    if(socket.clientNum % 2 === 0) {
-      if (socketMap[socket.clientNum + 1]) {
-        socketMap[socket.clientNum + 1].emit('leave')
-      }
-    } else {
-      if (socketMap[socket.clientNum - 1]) {
-        socketMap[socket.clientNum - 1].emit('leave')
-      }
-    }
-		socketMap.splice(socket.clientNum, 1)
-		clientCount = clientCount - 1
+	socket.on('disconnect', function() {
+		console.log('disconnect', socketMap.length, socketIndex)
+		io.emit('disconnect', `Player${socketIndex + 1}已离线`)
+		if (socketIndex % 2 === 0) {
+			if (socketMap[socketIndex + 1]) {
+				socketMap[socketIndex + 1].emit('leave', `Player${socketIndex}已掉线`)
+			}
+		} else {
+			if (socketMap[socketIndex - 1]) {
+				socketMap[socketIndex - 1].emit('leave', `Player${socketIndex}已掉线`)
+			}
+		}
 	})
-	setTimeout(() => {
-		console.log('socketMap:', socketMap.length, clientCount, socket)
-	}, 1000);
-
 })
 
 console.log('websocket server listening on port ' + PORT)
-
-
